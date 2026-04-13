@@ -27,14 +27,13 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth ->
-                        auth.requestMatchers("/user/**")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.POST, "/rooms")
-                                .hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/rooms")
-                                .hasAnyRole("ADMIN" , "STAFF")
-                                .requestMatchers(HttpMethod.GET , "/rooms/**")
-                                .hasAnyRole("ADMIN", "STAFF" , "GUEST")
+                        auth.requestMatchers("/user/**").permitAll()
+//                                .requestMatchers(HttpMethod.POST, "/rooms")
+//                                .hasAuthority("ROLE_ADMIN")
+//                                .requestMatchers(HttpMethod.GET, "/rooms")
+//                                .hasAnyAuthority("ROLE_ADMIN" , "ROLE_STAFF")
+//                                .requestMatchers(HttpMethod.GET , "/rooms/**")
+//                                .hasAnyAuthority("ROLE_ADMIN", "ROLE_STAFF" , "ROLE_GUEST")
                                 .anyRequest().authenticated()))
                 .addFilterBefore(jwtFilter , UsernamePasswordAuthenticationFilter.class);
 
