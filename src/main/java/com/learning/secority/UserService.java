@@ -1,6 +1,7 @@
 package com.learning.secority;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +24,8 @@ public class UserService implements UserDetailsService {
                 orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = getUserFromUsername(username);
@@ -32,7 +35,7 @@ public class UserService implements UserDetailsService {
                 .builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .authorities(Collections.emptyList())
+                .authorities(new SimpleGrantedAuthority(user.getRole()))  // we added role
                 .build();
     }
 }

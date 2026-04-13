@@ -18,12 +18,16 @@ public class JwtService {
 
 
     //generating token
-    public String generateToken(String username) {
+    public String generateToken(String username , String role) {
+
+        HashMap<String , Object> claims = new HashMap<>();  //For role
+        claims.put("Role" , role);
+
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*30))
-                .addClaims(new HashMap<>())
+                .addClaims(claims)  // we adding role in token generation
                 .signWith(getSignedKey() , SignatureAlgorithm.HS256)
                 .compact();
     }

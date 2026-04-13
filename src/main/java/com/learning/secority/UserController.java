@@ -24,17 +24,28 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/passEncoder")
-    public void saveUserWithEncodedPassword(String username , String password) {
+//    @GetMapping("/passEncoder")
+//    public void saveUserWithEncodedPassword(String username , String password , String role) {
+//
+//        UserEntity user = new UserEntity();
+//        user.setUsername(username);
+//        user.setPassword(passwordEncoder.encode(password));
+//        user.setIsActive(true);
+//        user.getRole(role);
+//
+//        userRepository.save(user);
+//    }
 
-        UserEntity user = new UserEntity();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setIsActive(true);
+    @PostMapping("/encodePassword")
+   public void saveUserWithEncodedPassword(@RequestBody UserRequestDTO dto) {
+       UserEntity user = new UserEntity();
+       user.setUsername(dto.getUsername());
+       user.setPassword(passwordEncoder.encode(dto.getPassword()));
+       user.setIsActive(true);
+       user.setRole(dto.getRole());
 
-        userRepository.save(user);
-    }
-
+       userRepository.save(user);
+   }
 
     @PostMapping("/authenticate")
     public String authenticate(@RequestBody AuthRequest authRequest) {
@@ -43,7 +54,15 @@ public class UserController {
                         authRequest.getPassword()));
 
         if(authenticate.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
+            String role = authenticate
+                    .getAuthorities()
+                    .iterator()
+                    .next()
+                    .getAuthority()
+                    .replace("ROLE_" , "");
+
+            return jwtService.generateToken(authRequest.getUsername() , role
+            );
         }
 
         return null;
